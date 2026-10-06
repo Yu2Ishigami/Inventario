@@ -12,9 +12,13 @@ const els = {
   title: $('#dialog-title'),
   error: $('#form-error'),
   toast: $('#toast'),
+  count: $('#count'),
+  filters: $('#filters'),
+  theme: $('#btn-theme'),
 };
 
 let products = [];
+let filter = 'all';
 
 // ---------- Utilidades ----------
 function toast(msg) {
@@ -27,8 +31,15 @@ function toast(msg) {
 async function refresh() {
   const [list, stats] = await Promise.all([api.list(els.search.value), api.stats()]);
   products = list;
-  renderProducts(els.body, els.empty, products);
+  draw();
   renderStats(els.stats, stats);
+}
+
+// Aplica el filtro (Todos / Stock bajo) y dibuja la tabla
+function draw() {
+  const visible = filter === 'low' ? products.filter((p) => p.stock <= p.min_stock) : products;
+  renderProducts(els.body, els.empty, visible);
+  els.count.textContent = visible.length ? `Mostrando ${visible.length} producto${visible.length === 1 ? '' : 's'}` : '';
 }
 
 function debounce(fn, ms = 250) {
@@ -75,6 +86,20 @@ els.form.addEventListener('submit', async (e) => {
 $('#btn-new').addEventListener('click', () => openForm());
 $('#btn-cancel').addEventListener('click', () => els.dialog.close());
 els.search.addEventListener('input', debounce(refresh));
+
+els.filters.addEventListener('click', (e) => {
+  const chip = e.target.closest('.chip');
+  if (!chip) return;
+  filter = chip.dataset.filter;
+  els.filters.querySelectorAll('.chip').forEach((c) => c.classList.toggle('active', c === chip));
+  draw();
+});
+
+els.theme.addEventListener('click', () => {
+  const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+  document.documentElement.dataset.theme = next;
+  try { localStorage.setItem('theme', next); } catch (_) {}
+});
 
 els.body.addEventListener('click', async (e) => {
   const btn = e.target.closest('button[data-action]');

@@ -1,7 +1,7 @@
 {
   "name": "inventario-tienda",
   "version": "1.0.0",
-  "description": "Prototipo de sistema de inventario para una tienda pequeña",
+  "description": "Sistema de inventario para una tienda pequeña",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
