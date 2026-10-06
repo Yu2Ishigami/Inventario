@@ -1,0 +1,22 @@
+name: Crear instalador de Windows
+
+on:
+  workflow_dispatch:      # botón manual en la pestaña Actions
+  push:
+    tags: ['v*']          # o al subir una etiqueta como v1.0.0
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install
+      - run: npm run dist
+      - uses: actions/upload-artifact@v4
+        with:
+          name: inventario-windows
+          path: |
+            dist/*.exe

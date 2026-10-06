@@ -2,13 +2,27 @@
   "name": "inventario-tienda",
   "version": "1.0.0",
   "description": "Sistema de inventario para una tienda pequeña",
-  "main": "server.js",
+  "author": "Mi Tienda",
+  "main": "electron/main.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node --watch server.js"
+    "dev": "node --watch server.js",
+    "desktop": "electron .",
+    "dist": "electron-builder --win --publish never"
   },
   "engines": { "node": ">=22.13" },
   "dependencies": {
     "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "electron": "^38.0.0",
+    "electron-builder": "^26.0.0"
+  },
+  "build": {
+    "appId": "com.mitienda.inventario",
+    "productName": "Inventario Tienda",
+    "files": ["electron/**", "src/**", "public/**", "package.json"],
+    "win": { "target": ["nsis", "portable"] },
+    "nsis": { "oneClick": false, "allowToChangeInstallationDirectory": true }
   }
 }
